@@ -231,3 +231,21 @@ git stash
 - gitmind ask "<question>": Allows users to ask specific questions about the repository's history, changes, or current state. Repo Aware Q/A.
 - gitmind recover: Reflog analysis and recovery suggestions for lost commits or branches.
 - gitmind suggest: Proactively analyzes the repository's state and provides suggestions for next steps, potential issues, and best practices.
+
+## Initial Architecture to Work with
+```
+User Query
+     │
+     ▼
+Router Agent
+     │
+ ┌───────┼───────┬──────┬─────┐
+ ▼       ▼       ▼      ▼     ▼
+History Code Recovery Docs GitHub
+Agent  Agent Agent    Agent Agent
+ └─────┬─────┬────────┘
+       ▼
+ Answer Synthesizer
+       ▼
+ User
+```
