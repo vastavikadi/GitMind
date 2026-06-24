@@ -231,6 +231,7 @@ git stash
 - gitmind ask "<question>": Allows users to ask specific questions about the repository's history, changes, or current state. Repo Aware Q/A.
 - gitmind recover: Reflog analysis and recovery suggestions for lost commits or branches.
 - gitmind suggest: Proactively analyzes the repository's state and provides suggestions for next steps, potential issues, and best practices.
+- gitmind explain: Provides explanations for specific commits, changes, or features in the repository, including context from PRs, issues, and discussions.
 
 ## Initial Architecture to Work with
 ```
@@ -248,4 +249,171 @@ Agent  Agent Agent    Agent Agent
  Answer Synthesizer
        ▼
  User
+```
+
+## Agents
+### History Agent
+<div>
+
+Responsible for:
+```
+git log
+git show
+git blame
+```
+Tasks:
+<ul>
+<li>commit explanation</li>
+<li>feature evolution</li>
+<li>timeline generation</li>
+<li>repository storytelling</li>
+</ul>
+</div>
+
+### Recovery Agent
+<div>
+
+Responsible for:
+```
+git reflog
+git fsck
+git stash
+```
+
+Workflow:
+```
+Read reflog
+↓
+Read fsck
+↓
+Identify dangling commits
+↓
+Find deleted branches
+↓
+Generate recovery plan
+```
+
+Tasks:
+<ul>
+<li>lost commit detection</li>
+<li>deleted branch recovery</li>
+<li>detached head recovery</li>
+</ul>
+
+</div>
+
+### Code Agent
+<div>
+
+Responsible for:
+```
+AST analysis
+code changes
+dependency changes
+```
+
+Libraries:
+
+- Tree-sitter
+- Jedi (Python)
+- TS-Morph (TypeScript)
+
+### GitHub Agent
+
+- Uses GitHub APIs.
+
+Collects:
+
+- PRs
+- reviews
+- comments
+- issues
+- discussions
+
+This provides human intent.
+
+### Data Layer
+
+> Structured Data
+
+Store:
+
+- commits
+- authors
+- branches
+- tags
+- PRs
+- issues
+- comments
+
+SQLite is enough initially.
+
+> Vector Database
+
+Only embed:
+
+- PR descriptions
+- Issue descriptions
+- Discussions
+- Documentation
+
+* Use:
+LlamaIndex
+
+with:
+Chroma
+or
+FAISS
+
+### Repo Storytelling
+
+```
+Command:
+gitmind story
+
+Pipeline:
+Get commits
+↓
+Cluster commits
+↓
+Identify features
+↓
+Summarize features
+↓
+Generate narrative
+
+Input:
+50 commits
+
+Output:
+This week:
+
+• OCR extraction added
+
+• EasyOCR replaced PaddleOCR
+
+• GitHub Actions introduced
+
+• Job extraction accuracy improved
+
+```
+
+## TECH STACK
+- CLI design: Typer + Rich
+- Git analysis: GitPython
+- Code analysis: Tree-sitter(Python), Jedi, TS-Morph
+- Agent orchestration: LangGraph
+- Evaluation: LangSmith
+- Retrieval: LlamaIndex + Chroma/FAISS
+- Storage: SQLite for structured data, Vector DB for embeddings
+- Embeddings: OpenAI Embeddings, LLaMA2 Embeddings, or Voyage or Gemini
+```
+Structure:
+gitmind/
+├── agents/
+├── tools/
+├── workflows/
+├── github/
+├── embeddings/
+├── cli.py
 ```
