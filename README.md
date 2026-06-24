@@ -399,7 +399,7 @@ This week:
 ```
 
 ## TECH STACK
-- CLI design: Typer + Rich
+- CLI design: Typer
 - Git analysis: GitPython
 - Code analysis: Tree-sitter(Python), Jedi, TS-Morph
 - Agent orchestration: LangGraph
