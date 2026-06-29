@@ -202,7 +202,13 @@ graph TD
 - **Git** installed and available in PATH
 - An **API key** for Google Gemini (default) or OpenAI
 
-### Quick Start
+### Install from PyPI
+
+```bash
+pip install gitmind
+```
+
+### Install from Source (Development)
 
 ```bash
 # 1. Clone the repository
@@ -220,15 +226,23 @@ source venv/bin/activate
 
 # 3. Install in development mode
 pip install -e .
-
-# 4. Set up configuration
-cp config.sample.py config.py
-cp .env.example .env
 ```
 
 ### Configuration
 
-Edit your `.env` file with your API keys:
+GitMind looks for a `.env` file in **`~/.gitmind/.env`** (your home directory). Create it:
+
+```bash
+# Create the config directory
+mkdir -p ~/.gitmind    # macOS/Linux
+# mkdir %USERPROFILE%\.gitmind   # Windows CMD
+# mkdir $HOME\.gitmind           # Windows PowerShell
+
+# Create the .env file
+nano ~/.gitmind/.env   # or use any text editor
+```
+
+Add your API keys to `~/.gitmind/.env`:
 
 ```env
 # Required — choose your LLM provider
@@ -249,6 +263,8 @@ GITHUB_TOKEN=your-github-token
 ```
 
 > **Note:** GitMind has been primarily tested with **Google Gemini**. OpenAI is supported but not as extensively tested.
+>
+> For development, you can also place a `.env` file in the project root — it will be picked up as a fallback.
 
 ### Verify Installation
 

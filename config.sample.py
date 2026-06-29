@@ -10,11 +10,13 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Load .env
-# Search for .env in project root, then in tests/ (dev fallback)
+# Search order: ~/.gitmind/.env (pip users) → project root (dev) → tests/ (dev fallback)
 _project_root = Path(__file__).resolve().parent
+_gitmind_home = Path.home() / ".gitmind"
 _env_paths = [
-    _project_root / ".env",
-    _project_root / "tests" / ".env",
+    _gitmind_home / ".env",          # pip-installed users place config here
+    _project_root / ".env",          # local dev (cloned repo)
+    _project_root / "tests" / ".env",  # dev fallback
 ]
 
 for _env_path in _env_paths:
