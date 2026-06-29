@@ -1,427 +1,449 @@
-# Copilot helps you write code. GitMind helps you understand what happened to your code.
+<div align="center">
 
-## Unstructured Thoughts
+# GitMind
 
-#### Git Coach
-- A CLI extension that analyzes (using git status, git log , git reflog, git branch, git diff) and gives the user a summary of the current state of the repo, including suggestions for next steps, potentials issues, and best practices. It can also provide guidance on resolving merge conflicts, rebasing, and other common git operations.
+### Copilot helps you write code. GitMind helps you understand what happened to it.
 
-#### AI Git Autocomplete
-- An AI-powered tool that provides intelligent autocomplete suggestions for git commands based on the user's current context and history. It can help users write complex git commands more efficiently and reduce the likelihood of errors.
+**Your AI-powered Git companion that reads repository history, analyzes code changes, traces commits to PRs and issues, recovers lost work, and tells the story of your codebase — all from the terminal.**
 
-Like: You recently wrote a commit message and the tool suggests a more descriptive message based on the changes made in the commit.
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://python.org)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![LangGraph](https://img.shields.io/badge/Built%20with-LangGraph-7C3AED?style=flat)](https://github.com/langchain-ai/langgraph)
+[![Gemini](https://img.shields.io/badge/LLM-Gemini%20%7C%20OpenAI-orange)](https://ai.google.dev/)
 
-#### Git History Explainer
-- A tool that analyzes the git history of a repository and provides explanations for the changes made in each commit. It can help users understand the evolution of the codebase, identify patterns, and learn from past decisions.
-- It could convert repo history into a narrative: 
-  - "In commit abc123, the team refactored the authentication module to improve security. This change was prompted by a security audit that identified vulnerabilities in the previous implementation."
-  - "In commit def456, a new feature was added to allow users to reset their passwords via email. This feature was requested by several users and aims to improve user experience."
+</div>
 
-#### AI Reflog Recovery Assistant
-- A tool that helps users recover lost commits or branches by analyzing the git reflog and providing suggestions for restoring the repository to a previous state. It can also provide guidance on how to avoid losing work in the future.
-- This solves a painful problem for developers who accidentally delete branches or commits and need to recover their work. The tool could provide a step-by-step guide for recovering lost commits, including commands to run and potential pitfalls to avoid.
+---
 
-Like: git reset --hard HEAD~1 removes the last commit along with any changes made in that commit. The AI Reflog Recovery Assistant could suggest using `git reflog` to find the lost commit and then use `git reset --hard <commit-hash>` to restore it.
+## The Problem
 
-## High-Level Design
-- The design of these tools would involve integrating with the git command-line interface and leveraging AI models to analyze the repository's state, history, and user behavior. The tools would need to be able to parse git commands, understand the context of the repository, and provide actionable insights to the user.
+You stare at `git log --oneline` and see a wall of cryptic commit messages. You wonder:
 
-`Git repository
-        ->
-Repository analysis
-        ->
-Agent reasoning
-        ->
-Action recommendation`
+- *"Why was this function introduced?"*
+- *"Who broke this last Tuesday?"*
+- *"I accidentally ran `git reset --hard` — can I get my work back?"*
+- *"What should I push next? Is it safe?"*
 
-### GitMind - Structured and Powerful
-- Writes gitmind in the terminal: A Chat opens and User asks then the agent runs the git commands (like git status, git log, git diff, git branch -vv, git merge-base etc.) and provides a summary of the current state of the repo, including suggestions for next steps, potential issues, and best practices. It can also provide guidance on resolving merge conflicts, rebasing, and other common git operations.
+Existing tools show you **what** happened. GitMind tells you **why**, **who**, and **what to do next**.
+
+---
+
+## What GitMind Does
+
+GitMind is a **multi-agent CLI tool** that uses AI to deeply understand your Git repository. Instead of parsing raw logs yourself, you ask questions in plain English — and GitMind's specialist agents investigate commits, diffs, PRs, issues, code structure, and reflog to give you real answers.
 
 ```
-The agent:
+You: "Why was authentication added to this project?"
 
-Reads commit history
-Groups commits by feature
-Detects force-push risk
-Suggests exact commands
-```
-
-> NOTE: The agent should be able to work for private and public repos, and should be able to handle large repositories with many branches and commits. It should also be able to provide suggestions for improving the repository's structure and organization, such as identifying redundant files or suggesting better naming conventions for branches and commits.
-
-- For this to work, we will need to introduce complete repo state, ATS parsing for what files changed, what functions changed, and what the commit messages are. The agent should be able to understand the context of the changes made in each commit and provide suggestions for improving the codebase.
-
-What To be Added:
-- Repo State
-- ATS parsing for what files changed, what functions changed, and what the commit messages are.
-- Github Contextual information (like PRs, Issues, Reviews, Discussions) to provide more context for the changes made in the repository.
-- Integration with Git hosting platforms (e.g., GitHub, GitLab) to fetch additional metadata and context for commits and changes.
-
-```
-EXAMPLE:
-User: What was the reason this function was introduced?
-
-Agent Flow:
-Function
- ↓
-git blame
- ↓
-commit
- ↓
-PR
- ↓
-issue
- ↓
-discussion
- ↓
-answer
-
-Response:
-
-Introduced in commit 8f2a91 by Aditya.
-
-Associated with issue #42:
-"Instagram OCR pipeline was timing out."
-
-Later modified in PR #67 to replace PaddleOCR with EasyOCR due to numpy ABI issues.
-```
-
-```
-User Query
-      ↓
-Router Agent
-      ↓
-───────────────────────
-History Agent
-Code Agent
-PR Agent
-Docs Agent
-Recovery Agent
-───────────────────────
-      ↓
-Answer Synthesizer
-```
-
-```
-A killer feature would be:
-
-gitmind suggest
-
-without asking anything.
-
-The agent proactively says:
-
-I noticed:
-
-• You rebased 12 minutes ago
-• You have unpushed commits
-• Branch is protected
-• Last push required force-with-lease
-
-Suggested next command:
-
-git push --force-with-lease origin feature/ocr
+GitMind:
+  → Finds commits touching auth files (History Agent)
+  → Analyzes function-level changes (Code Agent)
+  → Traces commit → PR #67 → Issue #42 (GitHub Agent)
+  → Synthesizes a complete answer
 ```
 
 ---
 
-```
--- Architecture --
-text
-CLI
-↓
-MCP Server
-↓
-LangGraph Agents
-↓
-GitPython
-GitHub API
-Tree-sitter
+## Features
 
-Tree-sitter gives semantic code understanding, GitPython gives history/state, and GitHub APIs provide PR/issue context.
+### `gitmind story` — Repository Storytelling
+
+Transforms raw commit history into a **human-readable narrative** grouped by feature, phase, and contributor.
+
+```bash
+gitmind story --days 14 --detailed
 ```
 
-## Detailed Features
-1. <div> Instead of:
-git log --oneline --graph --decorate --all
+> *"This repository began as a CLI tool for Git analysis. During the first week, the core agent architecture was established with LangGraph orchestration. The project then evolved into a multi-agent system with specialized agents for history, recovery, code analysis, and GitHub integration..."*
 
-<p>the agent generates:
+### `gitmind ask` — Repo-Aware Q&A
 
-Last week:
+Ask anything about your repository in natural language. Supports single-shot and multi-turn chat.
 
-<ul><li>Added OCR extraction pipeline</li>
-<li>Replaced PaddleOCR with EasyOCR</li>
-<li>Fixed NumPy ABI issues</li>
-<li>Added GitHub Actions deployment</li>
-<li>Improved OCR accuracy by normalizing text</li></ul>
-
-This is basically:
-```
-Commits
-↓
-Grouping
-↓
-Summarization
-↓
-Narrative
+```bash
+gitmind ask "what changed in the last 3 days?"
+gitmind ask "who introduced the vector store?"
+gitmind ask --chat   # interactive mode
 ```
 
-Even cooler: User - Explain the evolution of the OCR system
+### `gitmind suggest` — Proactive Advisor
 
-Agent:
-Find OCR files
-↓
-Find commits touching them
-↓
-Cluster commits
-↓
-Summarize
-</div>
+No question needed. GitMind proactively analyzes your repo state and tells you what to do next.
 
-2. <div>
-Complete access to the .git directory, including the ability to read and write to the .git/config file, .git/hooks, and other git-related files. This would allow the agent to provide more advanced features, such as automatically configuring git hooks or modifying the repository's configuration based on user preferences.
-
-This also allows the agent to learn the user's git habits and preferences over time, and provide more personalized suggestions and recommendations. For example, if the user frequently uses a specific git workflow or branching strategy, the agent could suggest commands and best practices that align with that workflow. This also lets the agent to learn Dev's Behaviour and where they are making mistakes or struggling, and provide suggestions to improve their git skills. For example, if the agent notices that the user frequently makes mistakes when rebasing, it could suggest alternative workflows or provide guidance on how to avoid common pitfalls.
-
-```
-I'd expose it as an Agent Tool
-
-Something like:
-
-class GitReflogTool:
-    def run():
-        read(".git/logs/HEAD")
-class GitObjectsTool:
-    def run():
-        inspect(".git/objects")
-class GitRefsTool:
-    def run():
-        inspect(".git/refs")
-
-Then LangGraph agents can use them.
-```
-</div>
-
-3. <div>
-```
-Before dangerous commands:
-
-git push --force
-
-Agent intercepts:
-
-Warning:
-
-2 teammates pushed after your last fetch.
-
-Recommended:
-
-git push --force-with-lease
-
-or:
-
-This reset will remove 3 uncommitted files.
-
-Suggested backup:
-
-git stash
-```
-</div>
-
-## Commands to Build
-- gitmind story: Outputs a narrative of the repo's history, including major changes, refactors, and feature additions.
-- gitmind ask "<question>": Allows users to ask specific questions about the repository's history, changes, or current state. Repo Aware Q/A.
-- gitmind recover: Reflog analysis and recovery suggestions for lost commits or branches.
-- gitmind suggest: Proactively analyzes the repository's state and provides suggestions for next steps, potential issues, and best practices.
-- gitmind explain: Provides explanations for specific commits, changes, or features in the repository, including context from PRs, issues, and discussions.
-
-## Initial Architecture to Work with
-```
-User Query
-     │
-     ▼
-Router Agent
-     │
- ┌───────┼───────┬──────┬─────┐
- ▼       ▼       ▼      ▼     ▼
-History Code Recovery Docs GitHub
-Agent  Agent Agent    Agent Agent
- └─────┬─────┬────────┘
-       ▼
- Answer Synthesizer
-       ▼
- User
+```bash
+gitmind suggest
 ```
 
-## Agents
-### History Agent
-<div>
+```markdown
+I noticed:
 
-Responsible for:
-```
-git log
-git show
-git blame
-```
-Tasks:
-<ul>
-<li>commit explanation</li>
-<li>feature evolution</li>
-<li>timeline generation</li>
-<li>repository storytelling</li>
-</ul>
-</div>
+- 🟡 You have 3 unpushed commits on 'feature/auth'
+- 🔴 You rebased 8 minutes ago — remote has diverged
+- 🟢 Branch 'old-experiment' hasn't been updated in 45 days
 
-### Recovery Agent
-<div>
-
-Responsible for:
-```
-git reflog
-git fsck
-git stash
+Recommended workflow:
+1. Resolve the diverged remote with `git push --force-with-lease`
+2. Delete the stale branch with `git branch -d old-experiment`
 ```
 
-Workflow:
-```
-Read reflog
-↓
-Read fsck
-↓
-Identify dangling commits
-↓
-Find deleted branches
-↓
-Generate recovery plan
+### `gitmind recover` — Lost Work Recovery
+
+Scans reflog, dangling objects, and stashes to find and recover lost commits, deleted branches, and abandoned work.
+
+```bash
+gitmind recover
 ```
 
-Tasks:
-<ul>
-<li>lost commit detection</li>
-<li>deleted branch recovery</li>
-<li>detached head recovery</li>
-</ul>
+> *"Lost commit detected: Hash `abc1234`, removed by `reset --hard` 12 minutes ago. Recovery: `git checkout -b recovery-branch abc1234`. Risk: Safe."*
 
-</div>
+### `gitmind explain` — Deep Dive
 
-### Code Agent
-<div>
+Explain a specific commit, file, or feature by tracing its full context chain.
 
-Responsible for:
-```
-AST analysis
-code changes
-dependency changes
+```bash
+gitmind explain abc1234          # explain a commit
+gitmind explain src/main.py      # explain a file's evolution
+gitmind explain "auth system"    # explain a feature
 ```
 
-Libraries:
+### `gitmind project` — Project Understanding
 
-- Tree-sitter
-- Jedi (Python)
-- TS-Morph (TypeScript)
+Analyzes README, docs, package metadata, and repo structure to explain what the project is, its architecture, technologies, and how to get started.
 
-### GitHub Agent
-
-- Uses GitHub APIs.
-
-Collects:
-
-- PRs
-- reviews
-- comments
-- issues
-- discussions
-
-This provides human intent.
-
-### Data Layer
-
-> Structured Data
-
-Store:
-
-- commits
-- authors
-- branches
-- tags
-- PRs
-- issues
-- comments
-
-SQLite is enough initially.
-
-> Vector Database
-
-Only embed:
-
-- PR descriptions
-- Issue descriptions
-- Discussions
-- Documentation
-
-* Use:
-LlamaIndex
-
-with:
-Chroma
-or
-FAISS
-
-### Repo Storytelling
-
+```bash
+gitmind project                          # full overview
+gitmind project "what does this do?"     # specific question
+gitmind project "how do I set this up?"  # setup instructions
 ```
-Command:
+
+### `gitmind index` — Semantic Search Setup
+
+Embeds commit messages, PR descriptions, and issue descriptions into ChromaDB for semantic search across your repository's history.
+
+```bash
+gitmind index --days 90
+```
+
+---
+
+## Architecture
+
+GitMind uses a **multi-agent architecture** powered by LangGraph. Each query is routed to the right specialist agent(s), and their outputs are synthesized into a single coherent response.
+
+![architecture](architecture.png)
+
+### Agent Responsibilities
+
+| Agent | Role | Tools Used |
+|-------|------|------------|
+| **History** | Commit archaeology, feature evolution, repo storytelling | `git log`, `git show`, `git blame`, embeddings search |
+| **Recovery** | Lost commit detection, deleted branch recovery, reflog analysis | `git reflog`, `git fsck`, stash inspection |
+| **Code** | Function-level change tracking, AST analysis, dependency mapping | Tree-sitter (Python, JS, TS), `git diff` |
+| **GitHub** | PR/issue/review context, commit → PR → issue tracing | PyGithub API |
+| **Suggest** | Proactive repo state analysis, safety checks, next-step recommendations | Status, reflog, unpushed detection, force-push risk |
+| **Project** | High-level project understanding from docs, metadata, and structure | README, pyproject.toml, docs/, package.json |
+| **Docs** | Git command documentation, concept explanations, workflow guidance | Built-in git knowledge base |
+
+### Data Flow
+
+> NOTE: Even I don't fully understand this diagram (now, it's too messy), but it works.
+
+```mermaid
+graph TD
+    CLI["CLI (Typer)"] --> Router["Router Agent"]
+
+    Router --> HA["History Agent"]
+    Router --> RA["Recovery Agent"]
+    Router --> CA["Code Agent"]
+    Router --> GA["GitHub Agent"]
+    Router --> SA["Suggest Agent"]
+    Router --> PA["Project Agent"]
+    Router --> DA["Docs Agent"]
+
+    HA --> GitTools["Git Tools (GitPython)"]
+    RA --> GitTools
+    SA --> GitTools
+    PA --> GitTools
+    CA --> CodeTools["Code Tools (Tree-sitter)"]
+    CA --> GitTools
+    GA --> GHTools["GitHub Tools (PyGithub)"]
+
+    HA --> Synth["Answer Synthesizer"]
+    RA --> Synth
+    CA --> Synth
+    GA --> Synth
+    SA --> Synth
+    PA --> Synth
+    DA --> Synth
+
+    Synth --> Output["Rich Console Output"]
+
+    GitTools --> SQLite["SQLite Cache"]
+    GHTools --> SQLite
+    GitTools --> Chroma["ChromaDB Vectors"]
+    GHTools --> Chroma
+
+    Config["config.py (.env)"] -.-> Router
+    Config -.-> HA
+    Config -.-> RA
+    Config -.-> CA
+    Config -.-> GA
+    Config -.-> SA
+    Config -.-> PA
+```
+
+---
+
+## Installation
+
+### Prerequisites
+
+- **Python 3.10+**
+- **Git** installed and available in PATH
+- An **API key** for Google Gemini (default) or OpenAI
+
+### Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/vastavikadi/GitMind.git
+cd GitMind
+
+# 2. Create and activate a virtual environment
+python -m venv venv
+
+# On Windows
+venv\Scripts\activate
+
+# On macOS/Linux
+source venv/bin/activate
+
+# 3. Install in development mode
+pip install -e .
+
+# 4. Set up configuration
+cp config.sample.py config.py
+cp .env.example .env
+```
+
+### Configuration
+
+Edit your `.env` file with your API keys:
+
+```env
+# Required — choose your LLM provider
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=your-gemini-api-key
+
+# Optional — only if using OpenAI
+# LLM_PROVIDER=openai
+# OPENAI_API_KEY=your-openai-api-key
+
+# Optional — enables GitHub agent (PR/issue context)
+# Create at: https://github.com/settings/tokens (classic token with repo + read:org)
+GITHUB_TOKEN=your-github-token
+
+# Optional — enables LangSmith tracing for debugging
+# LANGSMITH_TRACING=true
+# LANGSMITH_API_KEY=your-langsmith-api-key
+```
+
+> **Note:** GitMind has been primarily tested with **Google Gemini**. OpenAI is supported but not as extensively tested.
+
+### Verify Installation
+
+```bash
+gitmind --help
+```
+
+---
+
+## Usage
+
+Navigate to **any Git repository** and run GitMind commands:
+
+```bash
+cd /path/to/your/repo
+
+# Tell the story of last 7 days
 gitmind story
 
-Pipeline:
-Get commits
-↓
-Cluster commits
-↓
-Identify features
-↓
-Summarize features
-↓
-Generate narrative
+# Ask a question
+gitmind ask "why was this module refactored?"
 
-Input:
-50 commits
+# Get proactive suggestions
+gitmind suggest
 
-Output:
-This week:
+# Recover lost work
+gitmind recover
 
-• OCR extraction added
+# Explain a commit
+gitmind explain abc1234
 
-• EasyOCR replaced PaddleOCR
+# Understand the project
+gitmind project
 
-• GitHub Actions introduced
-
-• Job extraction accuracy improved
-
+# Build the semantic search index (run once)
+gitmind index
 ```
 
-## TECH STACK
-- CLI design: Typer
-- Git analysis: GitPython
-- Code analysis: Tree-sitter(Python), Jedi, TS-Morph
-- Agent orchestration: LangGraph
-- Evaluation: LangSmith
-- Retrieval: LlamaIndex + Chroma/FAISS
-- MCP server for tools - to expose MCP Tools to LLMs
-- Use context-7 for relevant documentation retrieval (for git, github, git lfs and all)
-- Storage: SQLite for structured data, Vector DB for embeddings
-- Embeddings: OpenAI Embeddings, LLaMA2 Embeddings, or Voyage or Gemini
+### Command Reference
+
+| Command | Description | Key Flags |
+|---------|-------------|-----------|
+| `gitmind story` | Narrative of repo history | `--days N`, `--detailed`, `--no-ai`, `--quickoverview` |
+| `gitmind ask` | Repo-aware Q&A | `"question"`, `--chat` for interactive mode |
+| `gitmind suggest` | Proactive suggestions | — |
+| `gitmind recover` | Reflog analysis + recovery | — |
+| `gitmind explain` | Explain commit/file/feature | `<target>` (hash, path, or name) |
+| `gitmind project` | Project overview | `"optional question"` |
+| `gitmind index` | Build vector search index | `--days N` |
+
+---
+
+## Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **CLI** | [Typer](https://typer.tiangolo.com/) + [Rich](https://rich.readthedocs.io/) | Terminal interface with styled panels, tables, spinners |
+| **Agent Orchestration** | [LangGraph](https://github.com/langchain-ai/langgraph) | Multi-agent workflow with routing and synthesis |
+| **LLM** | [Gemini](https://ai.google.dev/) / [OpenAI](https://openai.com/) | Reasoning, analysis, and natural language generation |
+| **Git Analysis** | [GitPython](https://gitpython.readthedocs.io/) | Commit history, reflog, blame, branches, diffs |
+| **Code Analysis** | [Tree-sitter](https://tree-sitter.github.io/) | AST parsing for Python, JavaScript, TypeScript |
+| **GitHub Integration** | [PyGithub](https://pygithub.readthedocs.io/) | PRs, issues, reviews, commit → PR tracing |
+| **Embeddings** | [ChromaDB](https://www.trychroma.com/) + LangChain | Semantic search over commits, PRs, issues |
+| **Structured Data** | SQLite + [Pydantic](https://docs.pydantic.dev/) | Cached repo data with validated models |
+| **Observability** | [LangSmith](https://smith.langchain.com/) | Agent tracing, debugging, and evaluation |
+
+---
+
+## Project Structure
+
 ```
-Structure:
 gitmind/
-├── agents/
-├── tools/
-├── workflows/
-├── github/
-├── embeddings/
-├── cli.py
+├── agents/                   # Specialist AI agents
+│   ├── history/              # Commit archaeology & storytelling
+│   ├── recovery/             # Lost work recovery
+│   ├── code/                 # AST-based code analysis
+│   ├── github/               # PR/issue/review context
+│   ├── suggest/              # Proactive repo advisor
+│   ├── project/              # Project understanding
+│   └── docs/                 # Git documentation helper
+├── tools/                    # LangChain tools for agents
+│   ├── git_tools.py          # 19 git inspection tools
+│   ├── code_tools.py         # Tree-sitter AST analysis tools
+│   └── story/                # Non-AI story generator
+├── workflows/                # Orchestration layer
+│   ├── router.py             # Query classification & routing
+│   ├── orchestrator.py       # Main pipeline (route → invoke → synthesize)
+│   └── synthesizer.py        # Multi-agent output merger
+├── github/                   # GitHub API integration
+│   ├── github_client.py      # PyGithub wrapper
+│   └── github_tools.py       # LangChain tool wrappers
+├── embeddings/               # Vector search
+│   └── vector_store.py       # ChromaDB + LangChain embeddings
+├── data/                     # Data layer
+│   ├── database.py           # SQLite cache
+│   └── models.py             # Pydantic models
+├── utils/                    # Utilities
+│   ├── output.py             # Rich formatting helpers
+│   └── banner.py             # CLI banner display
+├── cli.py                    # Typer CLI (all 7 commands)
+├── config.py                 # Central configuration (.env loading)
+├── config.sample.py          # Sample configuration (safe to commit)
+├── .env.example              # Environment variable template
+└── pyproject.toml            # Project metadata & dependencies
 ```
 
+---
 
-## ARCHITECTURE DIAGRAM
-- The architecture diagram might not be correct, this is just to give a soft idea about the project.
+## How It Works — Under the Hood
 
-![Architecture Diagram](architecture_diagram.png)
+### 1. Query Routing
+
+When you run `gitmind ask "why was auth added?"`, the **Router Agent** classifies your query using the LLM and determines which specialist agent(s) to invoke:
+
+```
+"why was auth added?" → primary: HISTORY, secondary: [CODE, GITHUB]
+```
+
+For direct commands like `gitmind suggest`, routing is bypassed entirely — the correct agent is invoked immediately.
+
+### 2. Agent Execution
+
+Each agent follows an **agentic loop** pattern:
+
+1. The LLM receives the query + system prompt + available tools
+2. It decides which tools to call (e.g., `get_commit_history`, `get_file_blame`)
+3. Tools execute and return results
+4. The LLM reasons over the results
+5. It either calls more tools or produces a final answer
+
+### 3. Answer Synthesis
+
+If multiple agents contribute, the **Synthesizer** merges their outputs into one coherent response — deduplicating information, resolving conflicts, and preserving specific details like commit hashes and PR numbers.
+
+### 4. Semantic Search
+
+The `gitmind index` command embeds commit messages, PR descriptions, and issue text into **ChromaDB**. Agents can then perform semantic searches like *"find commits related to authentication"* instead of relying on exact keyword matches.
+
+---
+
+## The Origin Story
+
+GitMind started with a simple frustration: **`git log` tells you what happened, but not why.**
+
+The brainstorming process began with four ideas — a Git Coach, AI Git Autocomplete, Git History Explainer, and AI Reflog Recovery Assistant — and converged into one unified tool that does all of them.
+
+The original vision:
+
+> *"The agent reads commit history, groups commits by feature, detects force-push risk, and suggests exact commands."*
+
+Every feature in GitMind traces back to a real developer pain point. The brainstorming document that started it all is preserved in [`WTF_I_BRAINSTORMED.md`](WTF_I_BRAINSTORMED.md) — raw, unfiltered, and exactly how the ideas first took shape.
+
+---
+
+## Roadmap
+
+- [ ] **MCP Server** — Expose GitMind tools via Model Context Protocol for use in IDEs and other LLM clients
+- [ ] **Context7 Integration** — Live documentation retrieval for git commands and libraries
+- [ ] **Multi-turn Memory** — Persistent chat history across sessions
+- [ ] **Git Hooks Integration** — Pre-push safety checks powered by the Suggest agent
+- [ ] **VS Code Extension** — Bring GitMind into the editor
+- [ ] **Multi-repo Support** — Analyze relationships across multiple repositories
+- [ ] **Custom Agent Plugins** — Let users define their own specialist agents
+
+---
+
+## Contributing
+
+Contributions are welcome. If you'd like to contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Make your changes
+4. Run the tool against a test repository to verify
+5. Submit a Pull Request
+
+---
+
+## License
+
+This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+---
+
+## Author
+
+**Aditya Shukla**
+
+- GitHub: [@vastavikadi](https://github.com/vastavikadi)
+- Email: adityashukla.sm26@gmail.com
+
+---
+
+<div align="center">
+
+*GitMind — Because your repository has a story. Let AI tell it.*
+
+</div>
