@@ -163,7 +163,7 @@ GitMind uses a **multi-agent architecture** powered by LangGraph. Each query is 
 ### Install from PyPI
 
 ```bash
-pip install gitmind
+pip install gitmind-cli
 ```
 
 > Note: Check configurations here: [GitMind](#configuration)
