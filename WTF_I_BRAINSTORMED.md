@@ -424,4 +424,4 @@ gitmind/
 ## ARCHITECTURE DIAGRAM
 - The architecture diagram might not be correct, this is just to give a soft idea about the project.
 
-![Vague Architecture Diagram](https://github.com/vastavikadi/GitMind/blob/main/assets/broken_architecture.png)
+![Vague Architecture Diagram](https://github.com/vastavikadi/GitMind/blob/main/assets/broken_architecture_diagram.png)
