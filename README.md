@@ -4,6 +4,8 @@
 
 ### Copilot helps you write code. GitMind helps you understand what happened to it.
 
+![GitMind Gif](https://github.com/vastavikadi/GitMind/blob/main/assets/gitmind.gif)
+
 **Your AI-powered Git companion that reads repository history, analyzes code changes, traces commits to PRs and issues, recovers lost work, and tells the story of your codebase — all from the terminal.**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://python.org)

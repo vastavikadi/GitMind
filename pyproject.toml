@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "gitmind-cli"
-version = "0.1.1"
+version = "0.2.1"
 description = "Understand your repository's past, present, and future."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -99,6 +99,9 @@ include = [
     "workflows*",
 ]
 exclude = ["tests*", "venv*"]
+
+[tool.setuptools.package-data]
+agents = ["**/*.yaml"]
 
 [tool.setuptools]
 py-modules = ["cli", "config", "main"]
