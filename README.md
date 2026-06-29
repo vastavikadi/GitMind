@@ -130,7 +130,7 @@ gitmind index --days 90
 
 GitMind uses a **multi-agent architecture** powered by LangGraph. Each query is routed to the right specialist agent(s), and their outputs are synthesized into a single coherent response.
 
-![architecture](architecture.png)
+![GitMind Architecture](https://github.com/vastavikadi/GitMind/blob/main/assets/architecture.png)
 
 ### Agent Responsibilities
 
@@ -148,49 +148,7 @@ GitMind uses a **multi-agent architecture** powered by LangGraph. Each query is 
 
 > NOTE: Even I don't fully understand this diagram (now, it's too messy), but it works.
 
-```mermaid
-graph TD
-    CLI["CLI (Typer)"] --> Router["Router Agent"]
-
-    Router --> HA["History Agent"]
-    Router --> RA["Recovery Agent"]
-    Router --> CA["Code Agent"]
-    Router --> GA["GitHub Agent"]
-    Router --> SA["Suggest Agent"]
-    Router --> PA["Project Agent"]
-    Router --> DA["Docs Agent"]
-
-    HA --> GitTools["Git Tools (GitPython)"]
-    RA --> GitTools
-    SA --> GitTools
-    PA --> GitTools
-    CA --> CodeTools["Code Tools (Tree-sitter)"]
-    CA --> GitTools
-    GA --> GHTools["GitHub Tools (PyGithub)"]
-
-    HA --> Synth["Answer Synthesizer"]
-    RA --> Synth
-    CA --> Synth
-    GA --> Synth
-    SA --> Synth
-    PA --> Synth
-    DA --> Synth
-
-    Synth --> Output["Rich Console Output"]
-
-    GitTools --> SQLite["SQLite Cache"]
-    GHTools --> SQLite
-    GitTools --> Chroma["ChromaDB Vectors"]
-    GHTools --> Chroma
-
-    Config["config.py (.env)"] -.-> Router
-    Config -.-> HA
-    Config -.-> RA
-    Config -.-> CA
-    Config -.-> GA
-    Config -.-> SA
-    Config -.-> PA
-```
+![GitMind - Data Flow Diagram](https://github.com/vastavikadi/GitMind/blob/main/assets/dfd.png)
 
 ---
 
