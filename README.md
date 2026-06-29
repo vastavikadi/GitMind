@@ -405,6 +405,8 @@ This week:
 - Agent orchestration: LangGraph
 - Evaluation: LangSmith
 - Retrieval: LlamaIndex + Chroma/FAISS
+- MCP server for tools - to expose MCP Tools to LLMs
+- Use context-7 for relevant documentation retrieval (for git, github, git lfs and all)
 - Storage: SQLite for structured data, Vector DB for embeddings
 - Embeddings: OpenAI Embeddings, LLaMA2 Embeddings, or Voyage or Gemini
 ```
@@ -417,3 +419,9 @@ gitmind/
 ├── embeddings/
 ├── cli.py
 ```
+
+
+## ARCHITECTURE DIAGRAM
+- The architecture diagram might not be correct, this is just to give a soft idea about the project.
+
+![Architecture Diagram](architecture_diagram.png)

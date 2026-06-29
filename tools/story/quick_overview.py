@@ -1,5 +1,8 @@
 import re
-from collections import defaultdict
+from utils.banner import print_banner
+from rich.console import Console
+
+console = Console(markup=True)
 
 STOPWORDS = {
     "feat",
@@ -110,7 +113,7 @@ class OverviewGenerator:
 
         return "misc"
 
-    def overview(self, RichFiglet=None, console=None):
+    def overview(self):
         """
         Generate a quick overview of the commits, grouped by topic.
 
@@ -121,17 +124,11 @@ class OverviewGenerator:
         """
         if not self.commits:
             return 'No commits found.'
-        
-        _BANNER = RichFiglet(
-            "Quick Overview",
-            font="ansi_shadow",
-            colors=["#ff4444", "#ffcc00"],
-            border=None,
-            border_color="#ffcc00",
-            justify="center",
-        )
 
-        console.print(_BANNER)
+        print_banner("Quick Overview")
+
+        if console:
+            console.print("[yellow]This might not be accurate, please use 'gitmind story --detailed' for a more detailed story.[/yellow]\n")
 
         topic_groups = {}
         for commit in self.commits:

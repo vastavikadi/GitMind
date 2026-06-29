@@ -1,5 +1,6 @@
 from collections import defaultdict
 from tools.story.get_commits import file_changes_by_commit, hyperlink
+from utils.banner import print_banner
 
 # to group commits by author
 # def group_commits_by_author(commits):
@@ -114,28 +115,25 @@ class StoryGenerator:
     def __init__(self, commits):
         self.commits = commits
 
-    def generate(self, detailed=False, RichFiglet=None, console=None):
+    def generate(self, detailed=False, by: str = "date"):
         if not self.commits:
             return "No commits found."
         
         grouper = GroupCommits(self.commits)
         
-        grouped_by_date = grouper.group(by="date")
+        grouped_by = grouper.group(by=by)
 
         story_lines = []
 
-        _BANNER = RichFiglet(
-            "Repository Story",
-            font="ansi_shadow",
-            colors=["#ff4444", "#ffcc00"],
-            border=None,
-            border_color="#ffcc00",
-            justify="center",
-        )
-        console.print(_BANNER)
+        print_banner("Repository Story")
 
-        for date, daily_commits in grouped_by_date.items():
-            story_lines.append(f"On {date}, the following commits were made:")
+        for first_key, daily_commits in grouped_by.items():
+            if by == "date":
+                story_lines.append(f"On {first_key}, the following commits were made:")
+            elif by == "author":
+                story_lines.append(f"By {first_key}, the following commits were made:")
+
+            
             for commit in daily_commits:
                 story_lines.append(
                     f"- [{commit['hash']}] {commit['message']} by https://github.com/{commit['author']}"

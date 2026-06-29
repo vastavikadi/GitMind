@@ -7,8 +7,8 @@ name = "gitmind"
 version = "0.1.0"
 description = "Understand your repository's past, present, and future."
 readme = "README.md"
-requires-python = ">=3.8"
-license = { text = "MIT" }
+requires-python = ">=3.10"
+license = "MIT"
 
 authors = [
     { name = "Aditya Shukla", email = "adityashukla.sm26@gmail.com" }
@@ -24,21 +24,67 @@ keywords = [
     "history",
     "analysis",
     "visualization",
-    "version-control"
+    "version-control",
+    "ai",
+    "langgraph",
 ]
 
 dependencies = [
+    # CLI & display
     "typer>=0.16.0",
-    "GitPython>=3.1.45",
-    "langgraph>=0.6.0",
-    "llama-index>=0.14.22",
-    "langsmith>=0.4.0",
-    "python-dotenv>=1.1.0",
-    "chromadb>=1.5.9",
-    "tree-sitter>=0.25.0",
+    "rich>=13.0.0",
     "rich-pyfiglet>=2.0.1",
+
+    # Git analysis
+    "GitPython>=3.1.45",
+
+    # LLM / Agent orchestration
+    "langchain>=0.3.0",
+    "langchain-core>=0.3.0",
+    "langchain-google-genai>=2.1.0",
+    "langchain-openai>=0.3.0",
+    "langgraph>=0.4.0",
+    "langsmith>=0.4.0",
+
+    # Retrieval & embeddings
+    "llama-index>=0.12.0",
+    "llama-index-vector-stores-chroma>=0.4.0",
+    "llama-index-embeddings-langchain>=0.3.0",
+    "chromadb>=0.5.0",
+
+    # Code analysis
+    "tree-sitter>=0.23.0",
+    "tree-sitter-python>=0.23.0",
+    "tree-sitter-javascript>=0.23.0",
+    "tree-sitter-typescript>=0.23.0",
+
+    # GitHub integration
+    "PyGithub>=2.5.0",
+
+    # Data & config
+    "pydantic>=2.0.0",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.1.0",
 ]
+
+[project.scripts]
+gitmind = "cli:app"
 
 [project.urls]
 Homepage = "https://github.com/vastavikadi/gitmind"
 Repository = "https://github.com/vastavikadi/gitmind"
+
+[tool.setuptools.packages.find]
+include = [
+    "agents*",
+    "data*",
+    "embeddings*",
+    "github*",
+    "tools*",
+    "utils*",
+    "workflows*",
+]
+exclude = ["tests*", "venv*"]
+
+[tool.setuptools]
+py-modules = ["cli", "config", "main"]

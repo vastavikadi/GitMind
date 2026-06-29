@@ -1,7 +1,10 @@
-import os
-import typer
+"""
+GitMind — Entry Point
 
-app = typer.Typer()
+Understand your repository's past, present, and future.
+"""
 
-my_name = os.getenv("My_Name")
-print(f"My name is {my_name}")
+from cli import app
+
+if __name__ == "__main__":
+    app()

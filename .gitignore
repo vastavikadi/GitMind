@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# configurations
+config.py
+gitmind_plan.md
+
 # Distribution / packaging
 .Python
 build/
