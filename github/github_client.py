@@ -88,7 +88,7 @@ class GitHubClient:
                 "labels": [l.name for l in pr.labels],
                 "review_comments": pr.review_comments,
             })
-        print(f"The PRs from github/github_client.py are: {prs}")
+        # print(f"The PRs from github/github_client.py are: {prs}")
         return prs
 
 # Get pr details
@@ -99,7 +99,7 @@ class GitHubClient:
 
         try:
             pr = self._github_repo.get_pull(pr_number)
-            print(f"The PR details from github/github_client.py are: {pr}")
+            # print(f"The PR details from github/github_client.py are: {pr}")
             return {
                 "number": pr.number,
                 "title": pr.title,
@@ -137,7 +137,7 @@ class GitHubClient:
                     "body": (review.body or "")[:500],
                     "submitted_at": review.submitted_at.isoformat() if review.submitted_at else None,
                 })
-            print(f"The PR reviews from github/github_client.py are: {reviews}")
+            # print(f"The PR reviews from github/github_client.py are: {reviews}")
             return reviews
         except self._GithubException:
             return []
@@ -157,7 +157,7 @@ class GitHubClient:
                     "body": (comment.body or "")[:500],
                     "created_at": comment.created_at.isoformat() if comment.created_at else None,
                 })
-            print(f"The PR comments from github/github_client.py are: {comments}")
+            # print(f"The PR comments from github/github_client.py are: {comments}")
             return comments
         except self._GithubException:
             return []
@@ -183,7 +183,7 @@ class GitHubClient:
                 "labels": [l.name for l in issue.labels],
                 "assignees": [a.login for a in issue.assignees],
             })
-        print(f"The issues from github/github_client.py are: {issues}")
+        # print(f"The issues from github/github_client.py are: {issues}")
         return issues
 
 # Get issue details
@@ -201,7 +201,7 @@ class GitHubClient:
                     "body": (comment.body or "")[:500],
                     "created_at": comment.created_at.isoformat() if comment.created_at else None,
                 })
-            print(f"The issue details from github/github_client.py are: {comments}")
+            # print(f"The issue details from github/github_client.py are: {comments}")
             return {
                 "number": issue.number,
                 "title": issue.title,
@@ -227,7 +227,7 @@ class GitHubClient:
         try:
             commit = self._github_repo.get_commit(commit_hash)
             prs = commit.get_pulls()
-            print(f"The PRs for commit from github/github_client.py are: {prs}")
+            # print(f"The PRs for commit from github/github_client.py are: {prs}")
             return [
                 {
                     "number": pr.number,
@@ -275,7 +275,7 @@ class GitHubClient:
                 except self._GithubException:
                     continue
 
-            print(f"The issues for PR from github/github_client.py are: {issues}")
+            # print(f"The issues for PR from github/github_client.py are: {issues}")
             return issues
         except self._GithubException:
             return []
@@ -299,7 +299,7 @@ class GitHubClient:
                     "state": issue.state,
                     "author": issue.user.login,
                 })
-            print(f"The PRs for search_prs from github/github_client.py are: {prs}")
+            # print(f"The PRs for search_prs from github/github_client.py are: {prs}")
             return prs
         except self._GithubException:
             return []
@@ -322,7 +322,7 @@ class GitHubClient:
                     "state": issue.state,
                     "author": issue.user.login,
                 })
-            print(f"The issues for search_issues from github/github_client.py are: {issues}")
+            # print(f"The issues for search_issues from github/github_client.py are: {issues}")
             return issues
         except self._GithubException:
             return []

@@ -64,6 +64,8 @@ Available agents:
 3. CODE — Handles: function-level changes, AST analysis, "what functions changed?",
    dependency analysis, code structure questions, module evolution.
    Uses Tree-sitter for semantic code understanding.
+   Explains files, folders, and functions when asked specifically using command `gitmind explain`.
+   Command: gitmind explain (for files/folder/functions)
 
 4. GITHUB — Handles: pull requests, issues, reviews, discussions,
    "why was this PR created?", "what issue is this related to?",
@@ -136,6 +138,13 @@ How do I set up this project?
 ------------------
 
 User:
+Explain the use of workflows/orchestrator.py
+
+→ PROJECT + CODE + HISTORY
+
+------------------
+
+User:
 Walk me through this codebase.
 
 → PROJECT + CODE
@@ -201,6 +210,7 @@ def route_query(query: str, command: Optional[str] = None) -> RoutingDecision:
     """
     # Fast-path for known commands
     if command:
+        # this is the fast path where the command is already known and the agent is decided
         command_map = {
             "story": AgentType.HISTORY,
             "recover": AgentType.RECOVERY,
@@ -208,15 +218,25 @@ def route_query(query: str, command: Optional[str] = None) -> RoutingDecision:
             "explain": AgentType.HISTORY,
             "project": AgentType.PROJECT,
         }
+        
+        secondary_map = { # separate map for secondary agents, modify as per the need
+        "story": [AgentType.GITHUB],
+        "explain": [AgentType.CODE, AgentType.PROJECT, AgentType.GITHUB],
+        "recover": [AgentType.GITHUB, AgentType.HISTORY],
+        "suggest": [AgentType.GITHUB, AgentType.PROJECT],
+        "project": [AgentType.GITHUB],
+        }
+        
         if command in command_map:
             return RoutingDecision(
                 primary_agent=command_map[command],
-                secondary_agents=[AgentType.GITHUB] if command in ("story", "explain") else [],
+                secondary_agents=secondary_map.get(command, []),
                 reasoning=f"Direct routing from '{command}' command.",
                 rewritten_query=query,
             )
 
     # LLM-based routing for `ask` command and ambiguous queries
+    # this is the slow path where the command is not known and the agent is decided by the LLM
     llm = get_llm(temperature=0)
     structured_llm = llm.with_structured_output(RoutingDecision)
 

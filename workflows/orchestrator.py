@@ -96,7 +96,7 @@ def run_query(query: str, command: Optional[str] = None) -> str:
 
     # Finally, Synthesize
     final_response = synthesize(agent_outputs, query)
-    print(f"The final response from the 'run_query' in orchestrator.py function is: {final_response}")
+    # print(f"The final response from the 'run_query' in orchestrator.py function is: {final_response}")
 
     return final_response
 

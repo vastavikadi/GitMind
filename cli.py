@@ -297,7 +297,7 @@ def index(
 
             print_info(f"Indexed {len(prs)} PRs and {len(issues)} issues.")
         except Exception as e:
-            traceback.print_exc()
+            # traceback.print_exc() # use for debugging
             print_warning(f"Could not index GitHub data: {e}")
 
     from utils.output import print_success

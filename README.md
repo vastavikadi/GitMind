@@ -208,6 +208,8 @@ graph TD
 pip install gitmind
 ```
 
+> Note: Check configurations here: [GitMind](#configuration)
+
 ### Install from Source (Development)
 
 ```bash

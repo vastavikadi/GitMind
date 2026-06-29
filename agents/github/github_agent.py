@@ -83,7 +83,6 @@ def github_agent(messages: list[BaseMessage]) -> str:
                 ToolMessage(content=str(result), tool_call_id=tc["id"])
             )
 
-        response = call_llm(messages, model_with_tools).result() # Check this one
-        print(f"The response from the agents/github/github_agent.py: {response}")
+        response = call_llm(messages, model_with_tools).result()
         
     return response.content

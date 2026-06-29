@@ -34,6 +34,14 @@ SYSTEM_PROMPT: |
   3. Identify when it was introduced, modified, or removed.
   4. Show who worked on it and why (from commit messages).
 
+  When asked about a file or folder:
+
+  1. Identify the file/folder.
+  2. Analyze its structure and contents.
+  3. Show its history through commits.
+  4. Show who worked on it and why (from commit messages).
+  5. What is its purpose in the project?
+
   ------------------------------------------------------------------------
   OUTPUT STYLE
   ------------------------------------------------------------------------
