@@ -34,7 +34,7 @@ def _get_tools():
     all_tools = list(HISTORY_TOOLS)
 
     if has_github_token():
-        from github.github_tools import GITHUB_TOOLS
+        from github_integration.github_tools import GITHUB_TOOLS
         all_tools.extend(GITHUB_TOOLS)
 
     return all_tools

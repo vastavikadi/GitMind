@@ -282,7 +282,7 @@ def index(
     # Try indexing GitHub data if token is available
     if config.has_github_token():
         try:
-            from github.github_client import GitHubClient
+            from github_integration.github_client import GitHubClient
 
             print_info("Indexing GitHub PRs and issues...")
 

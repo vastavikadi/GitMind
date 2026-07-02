@@ -405,6 +405,9 @@ Contributions are welcome. If you'd like to contribute:
 
 ---
 
+# Releases
+- 0.2.2 - Renamed github package to github_integration to avoid PyGithub collision
+
 ## License
 
 This project is licensed under the **MIT License**. See [LICENSE](LICENSE) for details.

@@ -24,12 +24,22 @@ class GitMindVectorStore:
 
     def __init__(self, collection_name: str = "gitmind", persist_dir: Optional[Path] = None):
         import chromadb
+        from chromadb.api.shared_system_client import SharedSystemClient
 
-        self._persist_dir = str(persist_dir or CHROMA_PATH)
+        self._persist_dir = str(Path(persist_dir or CHROMA_PATH).resolve())
         self._collection_name = collection_name
 
-        # Creating persistent ChromaDB client
-        self._chroma_client = chromadb.PersistentClient(path=self._persist_dir)
+        # Ensure the persist directory exists before ChromaDB tries to use it
+        Path(self._persist_dir).mkdir(parents=True, exist_ok=True)
+
+        # Creating persistent ChromaDB client with retry for stale cache
+        try:
+            self._chroma_client = chromadb.PersistentClient(path=self._persist_dir)
+        except KeyError:
+            # ChromaDB's SharedSystemClient cache is stale — clear and retry
+            SharedSystemClient._identifier_to_system.pop(self._persist_dir, None)
+            self._chroma_client = chromadb.PersistentClient(path=self._persist_dir)
+
         self._collection = self._chroma_client.get_or_create_collection(
             name=collection_name,
             metadata={"hnsw:space": "cosine"},

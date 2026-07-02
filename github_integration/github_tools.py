@@ -13,7 +13,7 @@ from typing import Optional
 from langchain.tools import tool
 
 from config import GITHUB_TOKEN, has_github_token
-from github.github_client import GitHubClient
+from github_integration.github_client import GitHubClient
 
 _client: Optional[GitHubClient] = None
 
