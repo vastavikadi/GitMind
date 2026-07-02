@@ -76,6 +76,5 @@ def recovery_agent(messages: list[BaseMessage]) -> str:
             )
 
         response = call_llm(messages, model_with_tools).result()
-        print(f"The response from the agents/recovery/recovery.py: {response}") # Check this one
 
     return response.text

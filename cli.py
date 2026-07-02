@@ -135,6 +135,7 @@ def ask(
 
             with spinner("Thinking..."):
                 result = run_query(user_input, command="ask") #check this one
+                # print(f"The result from the cli.py line 138: {result}")
 
             print_chat_response(result)
 
@@ -214,7 +215,7 @@ def explain(
     from workflows.orchestrator import run_explain
 
     with spinner(f"Investigating '{target}'..."):
-        result = run_explain(target) # Check this one
+        result = run_explain(target)
 
     print_response(result, title=f"Explanation: {target}")
 

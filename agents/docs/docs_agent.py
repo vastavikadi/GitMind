@@ -218,6 +218,6 @@ def docs_agent(messages: list[BaseMessage]) -> str:
             )
 
         response = call_llm(messages, model_with_tools).result() # Check this one
-        print(f"The response from the agents/docs/docs_agent.py: {response}")
+        # print(f"The response from the agents/docs/docs_agent.py: {response}")
 
     return response.text
